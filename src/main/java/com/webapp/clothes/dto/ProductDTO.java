@@ -36,9 +36,11 @@ public class ProductDTO {
     private String size;
 
     @NotNull
+    @NotBlank
+    private String brand;
+
+    @NotNull
     private String description;
     @NotNull
     private int status;
-
-    private Image image;
 }

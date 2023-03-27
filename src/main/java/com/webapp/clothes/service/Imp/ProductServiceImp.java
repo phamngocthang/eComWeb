@@ -1,8 +1,13 @@
 package com.webapp.clothes.service.Imp;
 
+import com.webapp.clothes.dto.ImageDTO;
 import com.webapp.clothes.dto.ProductAmount;
+import com.webapp.clothes.dto.ProductDTO;
 import com.webapp.clothes.entity.Product;
+import com.webapp.clothes.mapper.ImageMapper;
+import com.webapp.clothes.mapper.ProductMapper;
 import com.webapp.clothes.repositories.ProductRepository;
+import com.webapp.clothes.service.BillDetailService;
 import com.webapp.clothes.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +21,13 @@ public class ProductServiceImp implements ProductService {
 
     @Autowired
     ProductRepository productRepository;
+    @Autowired
+    BillDetailService billDetailService;
+    @Autowired
+    private ProductMapper mapperProduct;
+
+    @Autowired
+    private ImageMapper mapperImage;
     @Override
     public List<Product> getRecentProducts() {
         List<Product> listRecentProducts = productRepository.findTop4ByOrderByIdDesc();
@@ -49,17 +61,28 @@ public class ProductServiceImp implements ProductService {
 
     @Override
     public List<Product> getRelatedProduct(Integer id, String brand) {
-        // 8 Product
-        List<Product> listRelatedProduct = productRepository.getRelatedProduct(id, brand);
-        if(listRelatedProduct.size() < 8) {
+        // 6 Product
+        // Get san pham co cung brand va duoc mua nhieu nhat. If khong du 6 product lay them san pham cung brand
+        List<Object[]> listSumProductBought = billDetailService.getSumProductBought(brand);
+        List<Product> listRelatedProduct = new ArrayList<>();
+        listSumProductBought.forEach(obj -> {
+            Product product = productRepository.findById(Integer.valueOf(obj[0].toString())).get();
+            listRelatedProduct.add(product);
+        });
 
-        }
-        else {
+        if (listRelatedProduct.size() < 6) {
             List<Product> listProductByBrand = productRepository.findByBrand(brand);
+            for(Product p : listProductByBrand) {
+                boolean exists = listRelatedProduct
+                        .stream()
+                        .anyMatch(product -> product.getProductName().equals(p.getProductName()));
+                if (!exists)
+                    listRelatedProduct.add(p);
+                if (listRelatedProduct.size() == 6)
+                    break;
+            }
         }
 
-        return null;
+        return listRelatedProduct;
     }
-
-
 }

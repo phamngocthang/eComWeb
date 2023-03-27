@@ -1,8 +1,11 @@
 package com.webapp.clothes.controller.client;
 
+import com.webapp.clothes.dto.ImageDTO;
 import com.webapp.clothes.dto.ProductAmount;
 import com.webapp.clothes.dto.ProductDTO;
+import com.webapp.clothes.entity.Image;
 import com.webapp.clothes.entity.Product;
+import com.webapp.clothes.mapper.ImageMapper;
 import com.webapp.clothes.mapper.ProductMapper;
 import com.webapp.clothes.service.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +24,9 @@ public class ProductController {
     ProductService productService;
 
     @Autowired
-    private ProductMapper mapper;
+    private ProductMapper mapperProduct;
+    @Autowired
+    private ImageMapper mapperImage;
     @GetMapping(value = {"/", "/home"})
     public String home(Model model) {
         List<Product> recentProducts = productService.getRecentProducts();
@@ -34,11 +39,15 @@ public class ProductController {
         return "client/home";
     }
 
-    @GetMapping(value = {"/detail/{id}"})
-    public String shopdetail(Model model, @PathVariable("id") Integer id) {
+    @GetMapping(value = {"/detail/{id}/{brand}"})
+    public String shopdetail(Model model, @PathVariable("id") Integer id, @PathVariable("brand") String brand) {
         Product product = productService.getProductById(id);
-        ProductDTO productDTO = mapper.convertToDTO(product);
+        ProductDTO productDTO = mapperProduct.convertToDTO(product);
+        ImageDTO imageDTO = mapperImage.convertToDTO(product.getImage());
+        List<Product> listRelatedProduct = productService.getRelatedProduct(id, brand);
+        model.addAttribute("listRelatedProduct", listRelatedProduct);
         model.addAttribute("product", productDTO);
+        model.addAttribute("image", imageDTO);
         return "client/shopdetail";
     }
 }

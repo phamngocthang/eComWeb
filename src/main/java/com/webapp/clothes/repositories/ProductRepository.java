@@ -17,7 +17,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query(value = "select p from Product p, BillDetail b where p.id = b.product.id group by p.id ORDER BY COUNT(p.id) DESC")
     List<Product> getTopProduct();
 
-    @Query(value = "select p from Product p, BillDetail b where p.id = ?1 and b.id = ?1 and p.brand = ?2 ORDER BY count (p.id) DESC ")
-    List<Product> getRelatedProduct(Integer id, String brand);
     List<Product> findByBrand(String brand);
 }
