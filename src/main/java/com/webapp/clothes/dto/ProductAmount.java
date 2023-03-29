@@ -13,13 +13,19 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductAmount {
+
+    private Integer id;
     @NotNull
     @NotBlank
-    private String CategoryName;
+    private String attributeName;
 
     @NotNull
-    private Integer count;
+    private Integer countProductOfAttribute;
 
-    @NotNull
-    @NotBlank String pathImage;
+    String pathImage;
+
+    public ProductAmount(String attributeName, Integer countProductOfAttribute) {
+        this.attributeName = attributeName;
+        this.countProductOfAttribute = countProductOfAttribute;
+    }
 }

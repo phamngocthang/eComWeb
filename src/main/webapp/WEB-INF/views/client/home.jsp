@@ -139,14 +139,14 @@
     <div class="row px-xl-5 pb-3">
         <c:forEach items="${listCount}" var="item">
             <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <a class="text-decoration-none" href="">
+                <a class="text-decoration-none" href="${pageContext.request.contextPath}/shop?category=${item.id}">
                     <div class="cat-item d-flex align-items-center mb-4">
                         <div class="overflow-hidden" style="width: 100px; height: 100px;">
                             <img class="img-fluid" src="${item.pathImage}" alt="">
                         </div>
                         <div class="flex-fill pl-3">
-                            <h6>${item.categoryName}</h6>
-                            <small class="text-body">${item.count} Products</small>
+                            <h6>${item.attributeName}</h6>
+                            <small class="text-body">${item.countProductOfAttribute} Products</small>
                         </div>
                     </div>
 
@@ -175,7 +175,8 @@
                         </div>
                     </div>
                     <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">${item.productName}</a>
+                        <a class="h6 text-decoration-none text-truncate"
+                           href="${pageContext.request.contextPath}/detail/${item.id}/${item.brand}">${item.productName}</a>
                         <div class="d-flex align-items-center justify-content-center mt-2">
                             <h5>$ ${item.price}</h5><h6 class="text-muted ml-2"><del>$ ${item.price}</del></h6>
                         </div>
@@ -215,7 +216,8 @@
                         </div>
                     </div>
                     <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">${item.productName}</a>
+                        <a class="h6 text-decoration-none text-truncate"
+                           href="${pageContext.request.contextPath}/detail/${item.id}/${item.brand}">${item.productName}</a>
                         <div class="d-flex align-items-center justify-content-center mt-2">
                             <h5>${item.price}</h5><h6 class="text-muted ml-2"><del>$${item.price}</del></h6>
                         </div>
