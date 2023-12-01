@@ -27,17 +27,27 @@ public class ProductController {
 
     @Autowired
     private ProductMapper mapperProduct;
+
     @Autowired
     private ImageMapper mapperImage;
+
+    public static final String PRODUCT_MESSAGE = "Update Product Successfully";
+
     @GetMapping(value = {"/", "/home"})
     public String home(Model model) {
-        List<Product> recentProducts = productService.getRecentProducts();
-        List<ProductAmount> listCount = productService.countProductByCategoryId();
-        List<Product> top4Product = productService.getTopProductLimit(4);
+        // Lists the newest, recently added products
+        List<Product> listRecentProduct = productService.getRecentProducts();
 
-        model.addAttribute("topProduct", top4Product);
-        model.addAttribute("recentProducts", recentProducts);
-        model.addAttribute("listCount", listCount);
+        // List products by category, convert Product list to ProductAmount List
+        List<ProductAmount> listProductAmountByCategory = productService.countProductByCategoryId();
+
+        // Take the four products with the best revenue.
+        List<Product> listTop4Product = productService.getTopProductLimit(4);
+
+        // Add data and forward to view
+        model.addAttribute("topProduct", listTop4Product);
+        model.addAttribute("recentProducts", listRecentProduct);
+        model.addAttribute("listCount", listProductAmountByCategory);
         return "client/home";
     }
 
@@ -50,33 +60,35 @@ public class ProductController {
         model.addAttribute("listRelatedProduct", listRelatedProduct);
         model.addAttribute("product", productDTO);
         model.addAttribute("image", imageDTO);
+        String test = PRODUCT_MESSAGE;
         return "client/shopdetail";
     }
 
     @GetMapping(value = {"/shop"})
     public String shop(Model model, HttpServletRequest request) {
-
-        // Số lượng sản phẩm theo color
+        // Get product list by color, price.
         List<Integer> countProductByColor = productService.countProductByColor();
-        // Số lượng sản phẩm theo size
         List<Integer> countProductByPrice = productService.countProductByPrice();
-        // Filter theo Category, Price, Size, Sorting theo Lasted Product , Showing sử dụng session
-        // Nếu chọn Filter theo Popular Product thì reset tất cả
+
+        // Get data params from request
         String color = request.getParameter("color");
         String price = request.getParameter("price");
         String typeSort = request.getParameter("typeSort");
         String showing = request.getParameter("showing");
         String pageCurrent = request.getParameter("pageCurrent");
         String category = request.getParameter("category");
-        // Filter theo price, color, category và sắp xếp theo id, price
-        List<Product> listFilterProduct = productService.filterProduct(category, price, color, typeSort);
-        // Phân trang và hiện thị số lượng sản phẩm theo yeu cau
-        List<Product> listPageable = productService.pageAble(showing, pageCurrent, listFilterProduct);
-        // Lấy ra so trang
+
+        // Filter Product by category, price, color and typeSort
+        List<Product> listFilterProduct = productService.filterProductByCategoryAndPriceAndColor(category,
+                                                            price, color, typeSort);
+
+        // Filter Product by number of showing, currently page index.
+        List<Product> listPageable = productService.filterByShowingAndPageCurrent(showing, pageCurrent, listFilterProduct);
+
+        // Get the number of pages
         Integer pageAmount = productService.getPageAmount(showing, listFilterProduct.size());
 
-        System.out.println(color + " " + price + " " + typeSort + " " + showing);
-        // Chuyen du lieu sang view
+        // Add data and forward to view
         model.addAttribute("countProductByColor", countProductByColor);
         model.addAttribute("countProductByPrice", countProductByPrice);
         model.addAttribute("listPageable", listPageable);

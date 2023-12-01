@@ -113,7 +113,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<Product> filterProduct(String categoryId, String typePrice, String typeColor, String typeSort) {
+    public List<Product> filterProductByCategoryAndPriceAndColor(String categoryId, String typePrice, String typeColor, String typeSort) {
         List<Product> listFilterProduct = new ArrayList<>();
 
         // handleNull
@@ -204,7 +204,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public List<Product> pageAble(String showing, String pageCurrent, List<Product> listProduct) {
+    public List<Product> filterByShowingAndPageCurrent(String showing, String pageCurrent, List<Product> listProduct) {
         Integer pageCurrentNew = Integer.valueOf(handleNull(pageCurrent, "1").toString());
         Integer showingNew = Integer.valueOf(handleNull(showing, "3").toString());
 

@@ -25,13 +25,12 @@ public interface ProductService {
 
     Integer getPageAmount(String showing, Integer productAmount);
 
-    List<Product> filterProduct(String typePrice, String typeColor, String categoryId, String typeSort);
+    List<Product> filterProductByCategoryAndPriceAndColor(String typePrice, String typeColor, String categoryId, String typeSort);
 
+    List<Product> filterByShowingAndPageCurrent(String showing, String pageCurrent, List<Product> listProduct);
     List<Product> filterCategory(Integer categoryId);
 
     List<Integer> countProductByPrice();
 
     List<Product> getRelatedProduct(Integer id, String brand);
-
-    List<Product> pageAble(String showing, String pageCurrent, List<Product> listProduct);
 }
